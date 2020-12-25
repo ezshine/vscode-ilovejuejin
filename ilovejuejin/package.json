@@ -1,0 +1,107 @@
+{
+    "name": "ilovejuejin",
+    "displayName": "ilovejuejin",
+    "description": "put juejin in vscode's sidebar and extend more function",
+    "version": "0.0.1",
+    "icon": "resources/icon.png",
+    "publisher": "ezshine",
+    "categories": [
+		"Other"
+    ],
+    "license": "GPL",
+	"keywords": ["juejin","掘金","ilovejuejin"],
+	"engines": {
+		"vscode": "^1.48.0"
+	},
+    "repository": {
+        "url": "https://github.com/ezshine/vscode-ilovejuejin"
+    },
+    "activationEvents": [
+        "onCommand:ilovejuejin.openSite",
+        "onView:ilovejuejin_site",
+        "onView:ilovejuejin_tools",
+        "onView:ilovejuejin_recommend",
+        "onView:ilovejuejin_setting"
+    ],
+    "main": "./extension.js",
+    "contributes": {
+        "commands": [
+            {
+                "command": "ilovejuejin.openSite",
+                "title": "Open Juejin"
+            },
+            {
+                "command": "ilovejuejin.refreshRecommendUsers",
+                "title": "refresh",
+                "icon": "resources/icon_refresh.svg"
+            },
+            {
+                "command": "ilovejuejin.addTools",
+                "title": "add",
+                "icon": "resources/icon_appadd.svg"
+            }
+        ],
+        "viewsContainers": {
+            "activitybar": [
+                {
+                    "id": "ilovejuejin",
+                    "title": "我爱掘金",
+                    "icon": "resources/icon_juejin.svg"
+                }
+            ]
+        },
+        "views": {
+            "ilovejuejin": [
+                {
+                    "id": "ilovejuejin_site",
+                    "name": "快捷导航"
+                },
+                {
+                    "id": "ilovejuejin_setting",
+                    "name": "插件设置"
+                },
+                {
+                    "id": "ilovejuejin_recommend",
+                    "name": "作者推荐"
+                },
+                {
+                    "id": "ilovejuejin_tools",
+                    "name": "常用工具"
+                }
+            ]
+        },
+        "menus":{
+            "view/title": [
+                {
+                  "command": "ilovejuejin.refreshRecommendUsers",
+                  "when": "view == ilovejuejin_recommend",
+                  "group": "navigation@1"
+                },
+                {
+                    "command": "ilovejuejin.addTools",
+                    "when": "view == ilovejuejin_tools",
+                    "group": "navigation@1"
+                }
+            ]
+        }
+    },
+    "scripts": {
+        "lint": "eslint .",
+        "pretest": "yarn run lint",
+        "test": "node ./test/runTest.js"
+    },
+    "devDependencies": {
+        "@types/glob": "^7.1.3",
+        "@types/mocha": "^8.0.0",
+        "@types/node": "^14.0.27",
+        "@types/vscode": "^1.52.0",
+        "eslint": "^7.6.0",
+        "glob": "^7.1.6",
+        "mocha": "^8.0.1",
+        "typescript": "^3.8.3",
+        "vscode-test": "^1.4.0"
+    },
+    "dependencies": {
+        "axios": "^0.21.1"
+    }
+}

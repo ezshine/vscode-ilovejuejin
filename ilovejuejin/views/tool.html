@@ -1,0 +1,64 @@
+<html>
+    <head>
+        <style>
+            *{box-sizing: border-box;}
+            body,html{
+                margin:0;
+                padding: 0;
+                width: 100%;
+                height: 100%;
+                position: relative;
+            }
+        </style>
+        <script>
+            const vscode = acquireVsCodeApi();
+            var params; 
+            function log(str){
+                vscode.postMessage({
+                    command: 'log',
+                    text: str
+                })
+            }
+            function iframeOnLoad(){
+                log("iframeOnLoaded");
+            }
+            function openExternal(){
+                vscode.postMessage({
+                    command: 'openExternal',
+                    url: "https://juejin.cn/user/"+params.recommendby
+                })
+            }
+            window.addEventListener('message', event => {
+                const message = event.data;
+                if(message.command=="load"){
+                    params = message.params;
+
+                    document.getElementById("ifrDom").onload=iframeOnLoad;
+                    document.getElementById("ifrDom").src=message.params.url;
+
+                    document.getElementById("user_head").style.backgroundImage="url("+message.params.user_info.avatar_large+")";
+                    document.getElementById("user_name").innerText = message.params.user_info.user_name;
+                    document.getElementById("description").innerText = message.params.description;
+                }
+            });
+        </script>
+    </head>
+    <body>
+        <div style="width: 100%;height: 100%;display: flex;flex-direction: column;">
+            <div style="width: 100%;height: 100px;padding:10px 0px;overflow: hidden;">
+                <div onclick="openExternal()" style="cursor: pointer;display: flex;width:450px;height: 80px;margin:0 auto;">
+                    <div style="margin-right: 10px;color: #000;font-size: 12px;width: 16px;height: 60px;margin-top: 10px;padding: 8px 2px 0px 2px;background-color: #73C991;border-radius: 8px;">推荐人</div>
+                    <div id='user_head' style="background-size: cover;background-position: center;width: 80px;height: 80px;border-radius: 50%;overflow: hidden;border:1px solid #ccc;"></div>
+                    <div style="flex:1;margin-left: 10px;">
+                        <div style="font-size: 18px;text-overflow: ellipsis;width: 100%;word-wrap: none;white-space: nowrap;" id="user_name"></div>
+                        <div style="position: relative;margin-top: 5px;">
+                            <div style="position: absolute;left: -6px;top:6px;width: 0px;height: 0px;border-top: 10px solid transparent;border-bottom: 10px solid transparent;border-right: 10px solid #ccc;"></div>
+                            <div id="description" style="color: #000;font-size: 14px;background-color: #ccc;padding: 10px;border-radius: 6px;height: 54px;overflow: hidden;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <iframe id='ifrDom' src="" width="100%" style="flex:1;width:100%;" frameborder="no" border="0"></iframe>
+        </div>
+    </body>
+</html>
