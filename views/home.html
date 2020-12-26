@@ -1,0 +1,223 @@
+<html>
+    <head>
+        <style>
+            *{box-sizing: border-box;}
+            body,html{
+                margin:0;
+                padding: 0;
+                width: 100%;
+                position: relative;
+            }
+            .category
+            {
+                height: 46px;
+                background: #fff;
+                line-height: 46px;
+                overflow-x: scroll;
+                overflow-y: hidden;
+                width: 100%;
+                white-space: nowrap;
+            }
+            .category::-webkit-scrollbar {
+                display: none;
+            }
+            .category>.cateitem
+            {
+                color: #666;
+                padding:0px 20px;
+                border-radius: 10px;
+                cursor: pointer;
+            }
+            .category>.cateitem:hover,.category>.cateitem.actived
+            {
+                color: #1683FB;
+            }
+
+            .articles
+            {
+                width: 100%;
+                background: #333;
+            }
+            .articles>.articleitem
+            {
+                cursor: pointer;
+                min-height: 117px;
+                background: #333;
+                padding: 18px 24px;
+                border-bottom: 1px solid #444;
+                display: flex;
+                flex-direction: row;
+                justify-content: flex-start;
+            }
+            .articles>.articleitem:last-child
+            {
+                border-bottom:none;
+            }
+            .articleitem>.text
+            {
+                flex:1;
+                min-width: 0;
+                margin-right: 10px;
+            }
+            .articleitem>.image
+            {
+                width:60px;
+                height: 60px;
+                margin-top: 10px;
+                background:#444;
+                background-position: center;
+                background-size: cover;
+                background-repeat: no-repeat;
+            }
+            .articleitem>.text>.info
+            {
+                font-size: 12px;
+                color: #666;
+            }
+            .articleitem:hover>.text>.title
+            {
+                text-decoration: underline;
+            }
+            .articleitem>.text>.title
+            {
+                text-decoration:none;
+                margin-top: 10px;
+                font-size: 16px;
+                color: #999;
+                word-wrap: none;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                overflow: hidden;
+            }
+            .articleitem>.text>.brief
+            {
+                font-size: 14px;
+                color: #999;
+                width: 100%;
+                height: 30px;
+                overflow: hidden;
+            }
+            .articleitem>.text>.statistics
+            {
+                font-size: 14px;
+                color: #666;
+                padding:5px;
+                border: 1px solid #444;
+                width:auto; display:inline-block !important; display:inline;
+                margin-top: 10px;
+            }
+        </style>
+        <script src="./js/jquery.min.js"></script>
+        <script src="./js/main.js"></script>
+        <script>
+            var categorys=[];
+            var lastIndex=0;
+            var articles=[];
+            var lastCursor="0";
+            var isLoading=false;
+            var hasMore=true;
+            $(document).ready(function(){
+                $(document).on('scroll',function(){
+                    let scroH = $(document).scrollTop();
+                    let viewH = $(window).height();
+                    let bodyH = $(document.body).height();
+
+                    if (bodyH - scroH == viewH){
+                        loadArticlesByCategory(lastCursor);
+                    }
+                });
+            });
+
+            function switchCategory(index){
+                if(index!=lastIndex){
+                    $(".cateitem").eq(lastIndex).removeClass("actived");
+                    lastIndex=index;
+                    $(".articles").html("");
+                    lastCursor="0";
+                    loadArticlesByCategory(lastCursor);
+                    $(".cateitem").eq(index).addClass("actived");
+                }
+            }
+            function loadCategorys(){
+                request({
+                    url:"https://apinew.juejin.im/tag_api/v1/query_category_briefs?show_type=0",
+                    success:function(res){
+                        categorys=res.data;
+                        var str="";
+                        for(var i=0;i<categorys.length;i++){
+                            str+="<span class='cateitem' onclick='switchCategory("+i+")'>"+categorys[i].category_name+"</span>";
+                        }
+                        document.querySelector(".category").innerHTML=str;
+
+                        switchCategory(1);
+                    },
+                    fail:function(err){
+
+                    }
+                });
+            }
+            function getTagsStr(arr){
+                var str = "";
+                for(var i = 0;i<arr.length;i++){
+                    str += arr[i].tag_name;
+                    if(i!=arr.length-1)str+=' / ';
+                }
+                return str;
+            }
+            function loadArticlesByCategory(cursor){
+                if(isLoading||!hasMore)return;
+                isLoading=true;
+                var cate_item = categorys[lastIndex];
+                request({
+                    url:"https://api.juejin.cn/recommend_api/v1/article/recommend_cate_feed",
+                    method:"POST",
+                    data:{
+                        cate_id: cate_item.category_id,
+                        cursor: cursor,
+                        id_type: 2,
+                        limit: 20,
+                        sort_type: 200
+                    },
+                    success:function(res){
+                        isLoading=false;
+                        hasMore=res.has_more;
+                        lastCursor=res.cursor;
+                        var new_articles = res.data       
+                        for(var i=0;i<new_articles.length;i++){
+                            var article_item=new_articles[i];
+                            $(".articles").append(`
+                                <div class='articleitem' onclick='openInWebview("https://juejin.cn/post/${article_item.article_id}")'>
+                                    <div class='text'>
+                                        <div class='info'>${article_item.author_user_info.user_name} · ${getTimeUntilNow(article_item.article_info.ctime)} · ${getTagsStr(article_item.tags)}</div>
+                                        <div class='title'>${article_item.article_info.title}</div>
+                                        <div class='statistics'>赞 ${article_item.article_info.digg_count}  评论 ${article_item.article_info.comment_count}</div>
+                                    </div>
+                                    <div class='image' style='background-image:url(${article_item.article_info.cover_image});display:${article_item.article_info.cover_image==''?'none':'block'}'></div>
+                                </div>
+                            `);
+                        }
+                    },
+                    fail:function(err){
+                        isLoading=false;
+                    }
+                });
+            }
+            window.addEventListener('message', event => {
+                const message = event.data;
+                if(message.command=="load"){
+                    loadCategorys();
+                }
+            });
+        </script>
+    </head>
+    <body>
+        <div class="category">
+
+        </div>
+        <div style="width: 100%;padding: 10px;">
+            <div class="articles">
+
+            </div>
+        </div>
+    </body>
+</html>

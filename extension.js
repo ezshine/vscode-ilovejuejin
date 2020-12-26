@@ -17,8 +17,9 @@ const { default: axios } = require('axios');
  */
 
 var webViewStorage={};
-function activate(context) {
-
+var context;
+function activate(ctx) {
+	context = ctx;
 	// Use the console to output diagnostic information (console.log) and errors (console.error)
 	// This line of code will only be executed once when your extension is activated
 	console.log('Congratulations, your extension "ilovejuejin" is now active!');
@@ -38,68 +39,7 @@ function activate(context) {
 	const toolsTree = new ToolsTree(context);
 	vscode.window.registerTreeDataProvider("ilovejuejin_tools", toolsTree);
 
-	let openSite = vscode.commands.registerCommand('ilovejuejin.openSite', function (params) {
-		// The code you place here will be executed every time your command is executed
-		// console.log('ilovejuejin.openSite:' + JSON.stringify(params));
-		// Display a message box to the user
-
-		var view = params.view||"juejin";
-
-		if(!webViewStorage[view])webViewStorage[view]={};
-
-		var webViewPanel = webViewStorage[view].panel;
-		if(!webViewPanel){
-			webViewPanel = vscode.window.createWebviewPanel(
-				'webview', // viewType
-				params.title, // 视图标题
-				vscode.ViewColumn.One,
-				{
-					enableScripts: true, // 启用JS，默认禁用
-					retainContextWhenHidden: true // webview被隐藏时保持状态，避免被重置
-				}
-			);
-			webViewPanel.onDidDispose(function(){
-				console.log("webview diposed");
-				delete webViewStorage[view];
-			});
-			webViewPanel.webview.onDidReceiveMessage(
-				message => {
-					console.log("webview onDidReceiveMessage：",JSON.stringify(message));
-					switch (message.command) {
-						case 'alert':
-							vscode.window.showInformationMessage(message.text);
-							break;
-						case 'log':
-							console.log(message.text);
-							break;
-						case 'openExternal':
-							vscode.env.openExternal(message.url);
-							break;
-					}
-				},
-				undefined,
-				context.subscriptions
-			);
-
-			webViewStorage[view]={panel:webViewPanel,url:params.url};
-		}
-		webViewStorage[view].url = params.url;
-		webViewPanel.title = params.title;
-		webViewPanel.iconPath = vscode.Uri.file(path.join(__dirname,"resources","icon_"+view+".svg"));
-
-		webViewPanel.webview.html = getWebViewContent(context, 'views/'+view+'.html');
-		webViewPanel.activate = true;
-
-		if(view=="tool"&&!params.user_info){
-			console.log("request user_info",params.recommendby);
-			axios.get("https://api.juejin.cn/user_api/v1/user/get?user_id="+params.recommendby+"&not_self=1").then(function(res){
-				params.user_info = res.data.data;
-				webViewPanel.webview.postMessage({ command: 'load' , params:params });
-			});
-		}else{
-			webViewPanel.webview.postMessage({ command: 'load' , params:params });
-		}
-	});
+	let openSite = vscode.commands.registerCommand('ilovejuejin.openSite', openInWebview);
 	context.subscriptions.push(openSite);
 
 	let refreshRecommendUsers = vscode.commands.registerCommand('ilovejuejin.refreshRecommendUsers', function () {
@@ -116,6 +56,84 @@ function activate(context) {
 	});
 
 	context.subscriptions.push(refreshRecommendUsers);
+}
+
+function openInWebview(params) {
+	// The code you place here will be executed every time your command is executed
+	// console.log('ilovejuejin.openSite:' + JSON.stringify(params));
+	// Display a message box to the user
+
+	var view = params.view||"default";
+
+	if(!webViewStorage[view])webViewStorage[view]={};
+
+	var webViewPanel = webViewStorage[view].panel;
+	if(!webViewPanel){
+		webViewPanel = vscode.window.createWebviewPanel(
+			'webview', // viewType
+			'', // 视图标题
+			vscode.ViewColumn.One,
+			{
+				enableFindWidget:true,
+				enableCommandUris: true,
+				enableScripts: true, // 启用JS，默认禁用
+				retainContextWhenHidden: true // webview被隐藏时保持状态，避免被重置
+			}
+		);
+		webViewPanel.onDidDispose(function(){
+			console.log("webview diposed");
+			delete webViewStorage[view];
+		});
+		webViewPanel.webview.onDidReceiveMessage(
+			message => {
+				console.log("webview onDidReceiveMessage：",JSON.stringify(message));
+				switch (message.command) {
+					case 'alert':
+						vscode.window.showInformationMessage(message.text);
+						break;
+					case 'log':
+						console.log(message.text);
+						break;
+					case 'openExternal':
+						vscode.env.openExternal(message.url);
+						break;
+					case 'openInWebview':
+						openInWebview({url:message.url});
+						break;
+					case 'request':
+						console.log("ready to request from weview");
+						console.log(message.params);
+						axios.request({
+							url:message.params.url,
+							method:message.params.method||'GET',
+							data:message.params.data
+						}).then((res)=>{
+							console.log(res);
+							webViewPanel.webview.postMessage({ command: 'onRequestSuccess' , data:res.data });
+						}).catch((err)=>{
+							console.log(err);
+							webViewPanel.webview.postMessage({ command: 'onRequestFail' , data:err });
+						});
+						break;
+				}
+			},
+			undefined,
+			context.subscriptions
+		);
+
+		webViewStorage[view]={panel:webViewPanel};
+	}
+	webViewPanel.title = params.title||"掘金";
+
+	webViewPanel.iconPath = vscode.Uri.file(path.join(__dirname,"resources",params.icon||"icon_"+view+".svg"));
+
+	if(params.url!=webViewStorage[view].url){
+		webViewStorage[view].url = params.url;
+		webViewPanel.webview.html = getWebViewContent(context, 'views/'+view+'.html');
+		webViewPanel.webview.postMessage({ command: 'load' , params:params });
+	}
+
+	webViewPanel.reveal();
 }
 
 function getWebViewContent(context, templatePath) {

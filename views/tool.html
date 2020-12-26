@@ -10,35 +10,35 @@
                 position: relative;
             }
         </style>
+        <script src="./js/main.js"></script>
         <script>
-            const vscode = acquireVsCodeApi();
-            var params; 
-            function log(str){
-                vscode.postMessage({
-                    command: 'log',
-                    text: str
-                })
+            var params;
+
+            function openRecommendUserPage(){
+                openInWebview("https://juejin.cn/user/"+params.recommendby);
             }
-            function iframeOnLoad(){
-                log("iframeOnLoaded");
-            }
-            function openExternal(){
-                vscode.postMessage({
-                    command: 'openExternal',
-                    url: "https://juejin.cn/user/"+params.recommendby
-                })
-            }
+            
             window.addEventListener('message', event => {
                 const message = event.data;
                 if(message.command=="load"){
                     params = message.params;
 
-                    document.getElementById("ifrDom").onload=iframeOnLoad;
+                    document.getElementById("ifrDom").onload=function(){
+                        log("iframeOnLoaded");
+                    };
                     document.getElementById("ifrDom").src=message.params.url;
-
-                    document.getElementById("user_head").style.backgroundImage="url("+message.params.user_info.avatar_large+")";
-                    document.getElementById("user_name").innerText = message.params.user_info.user_name;
                     document.getElementById("description").innerText = message.params.description;
+
+                    request({
+                        url:"https://api.juejin.cn/user_api/v1/user/get?user_id="+params.recommendby+"&not_self=1",
+                        success:function(res){
+                            document.getElementById("user_head").style.backgroundImage="url("+res.data.avatar_large+")";
+                            document.getElementById("user_name").innerText = res.data.user_name;
+                        },
+                        fail:function(err){
+
+                        }
+                    });
                 }
             });
         </script>
@@ -46,7 +46,7 @@
     <body>
         <div style="width: 100%;height: 100%;display: flex;flex-direction: column;">
             <div style="width: 100%;height: 100px;padding:10px 0px;overflow: hidden;">
-                <div onclick="openExternal()" style="cursor: pointer;display: flex;width:450px;height: 80px;margin:0 auto;">
+                <div onclick="openRecommendUserPage()" style="cursor: pointer;display: flex;width:450px;height: 80px;margin:0 auto;">
                     <div style="margin-right: 10px;color: #000;font-size: 12px;width: 16px;height: 60px;margin-top: 10px;padding: 8px 2px 0px 2px;background-color: #73C991;border-radius: 8px;">推荐人</div>
                     <div id='user_head' style="background-size: cover;background-position: center;width: 80px;height: 80px;border-radius: 50%;overflow: hidden;border:1px solid #ccc;"></div>
                     <div style="flex:1;margin-left: 10px;">

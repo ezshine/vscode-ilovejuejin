@@ -10,9 +10,6 @@ class SettingTree {
         this._onDidChangeTreeData = new vscode.EventEmitter();
         this.onDidChangeTreeData = this._onDidChangeTreeData.event;
     }
-    refresh(){
-        this._onDidChangeTreeData.fire();
-    }
     getTreeItem(element){
         return element;
     }
@@ -44,12 +41,6 @@ class SettingTree {
 
         return fin_items;
     }
-    deleteRom(item){
-        
-    }
-    rename(item){
-		
-	}
 }
 
 class DataItem extends vscode.TreeItem{

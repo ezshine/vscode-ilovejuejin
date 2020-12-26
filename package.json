@@ -1,23 +1,22 @@
 {
     "name": "ilovejuejin",
-    "displayName": "ilovejuejin",
-    "description": "put juejin in vscode's sidebar and extend more function",
-    "version": "0.0.1",
+    "displayName": "我爱掘金",
+    "description": "把掘金网站塞到VSCode里，并添加了更多乐趣！",
+    "version": "0.0.4",
     "icon": "resources/icon.png",
     "publisher": "ezshine",
+    "repository": {
+        "url": "https://github.com/ezshine/vscode-ilovejuejin"
+    },
     "categories": [
 		"Other"
     ],
     "license": "GPL",
-	"keywords": ["juejin","掘金","ilovejuejin"],
+	"keywords": ["juejin","掘金","我爱掘金","ilovejuejin","i love juejin"],
 	"engines": {
 		"vscode": "^1.48.0"
 	},
-    "repository": {
-        "url": "https://github.com/ezshine/vscode-ilovejuejin"
-    },
     "activationEvents": [
-        "onCommand:ilovejuejin.openSite",
         "onView:ilovejuejin_site",
         "onView:ilovejuejin_tools",
         "onView:ilovejuejin_recommend",
@@ -26,10 +25,6 @@
     "main": "./extension.js",
     "contributes": {
         "commands": [
-            {
-                "command": "ilovejuejin.openSite",
-                "title": "Open Juejin"
-            },
             {
                 "command": "ilovejuejin.refreshRecommendUsers",
                 "title": "refresh",
@@ -94,7 +89,7 @@
         "@types/glob": "^7.1.3",
         "@types/mocha": "^8.0.0",
         "@types/node": "^14.0.27",
-        "@types/vscode": "^1.52.0",
+        "@types/vscode": "^1.48.0",
         "eslint": "^7.6.0",
         "glob": "^7.1.6",
         "mocha": "^8.0.1",

@@ -10,21 +10,14 @@
                 position: relative;
             }
         </style>
+        <script src="./js/main.js"></script>
         <script>
-            const vscode = acquireVsCodeApi();
-            function log(str){
-                vscode.postMessage({
-                    command: 'log',
-                    text: str
-                })
-            }
-            function iframeOnLoad(){
-                log("iframeOnLoaded");
-            }
             window.addEventListener('message', event => {
                 const message = event.data;
                 if(message.command=="load"){
-                    document.getElementById("ifrDom").onload=iframeOnLoad;
+                    document.getElementById("ifrDom").onload=function(){
+                        log("iframeOnLoaded");
+                    };
                     document.getElementById("ifrDom").src=message.params.url;
                 }
             });

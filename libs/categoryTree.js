@@ -10,9 +10,6 @@ class CategoryTree {
         this._onDidChangeTreeData = new vscode.EventEmitter();
         this.onDidChangeTreeData = this._onDidChangeTreeData.event;
     }
-    refresh(){
-        this._onDidChangeTreeData.fire();
-    }
     getTreeItem(element){
         return element;
     }
@@ -22,7 +19,8 @@ class CategoryTree {
             {
                 title:"首页",
                 icon:"icon_home.svg",
-                url:"https://juejin.cn"
+                url:"https://juejin.cn",
+                view:"home"
             },
             {
                 title:"沸点",
@@ -40,9 +38,9 @@ class CategoryTree {
                 url:"https://juejin.cn/events"
             },
             {
-                title:"群聊(beta)",
+                title:"群聊(concept)",
                 icon:"icon_chat.svg",
-                url:"http://kedou.workerman.net/"
+                url:"http://www.rainbow1024.com/ilovejuejin/kedou/"
             }
         ];
         var a_length = r_cates.length;
@@ -64,12 +62,6 @@ class CategoryTree {
 
         return fin_items;
     }
-    deleteRom(item){
-        
-    }
-    rename(item){
-		
-	}
 }
 
 class DataItem extends vscode.TreeItem{
