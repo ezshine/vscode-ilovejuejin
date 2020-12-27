@@ -22,7 +22,7 @@ class ToolsTree {
         var timestamp = new Date().getTime();
         if(!lastTimestamp||timestamp-lastTimestamp>3600000){
             lastTimestamp=timestamp;
-            const res = await axios.get("https://www.rainbow1024.com/ilovejuejin/tools.json");
+            const res = await axios.get("http://www.rainbow1024.com/ilovejuejin/tools.json");
             r_tools = res.data;
         }else{
             console.log("use cached recommend users");

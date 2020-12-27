@@ -20,6 +20,11 @@ class SettingTree {
                 title:"关注插件作者",
                 icon:"icon_fire.svg",
                 url:"https://juejin.cn/user/2955079655898093"
+            },
+            {
+                title:"反馈 & 建议",
+                icon:"icon_like.svg",
+                url:"https://juejin.cn/post/6910962718891573255"
             }
         ];
         var a_length = r_cates.length;

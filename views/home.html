@@ -11,24 +11,49 @@
             .category
             {
                 height: 46px;
-                background: #fff;
+                background: #333;
                 line-height: 46px;
                 overflow-x: scroll;
                 overflow-y: hidden;
                 width: 100%;
                 white-space: nowrap;
+                position: fixed;
             }
             .category::-webkit-scrollbar {
                 display: none;
             }
             .category>.cateitem
             {
-                color: #666;
+                color: #999;
                 padding:0px 20px;
                 border-radius: 10px;
                 cursor: pointer;
             }
             .category>.cateitem:hover,.category>.cateitem.actived
+            {
+                color: #1683FB;
+            }
+
+            .sorts
+            {
+                width: 100%;
+                background: #333;
+                height: 46px;
+                line-height: 46px;
+                padding: 0px 14px;
+                border-bottom: 1px solid #444;
+            }
+            .sorts>.divide
+            {
+                color: #999;
+            }
+            .sorts>.sortitem
+            {
+                color: #999;
+                padding:0px 10px;
+                cursor: pointer;
+            }
+            .sorts>.sortitem:hover,.sorts>.sortitem.actived
             {
                 color: #1683FB;
             }
@@ -116,6 +141,7 @@
             var lastCursor="0";
             var isLoading=false;
             var hasMore=true;
+            var sortType=200;
             $(document).ready(function(){
                 $(document).on('scroll',function(){
                     let scroH = $(document).scrollTop();
@@ -126,6 +152,10 @@
                         loadArticlesByCategory(lastCursor);
                     }
                 });
+
+                $(".sortitem").click(function(e){
+                    switchSortType($(this).attr("data-type"),true);
+                });
             });
 
             function switchCategory(index){
@@ -134,8 +164,20 @@
                     lastIndex=index;
                     $(".articles").html("");
                     lastCursor="0";
+                    switchSortType(200);
                     loadArticlesByCategory(lastCursor);
                     $(".cateitem").eq(index).addClass("actived");
+                }
+            }
+            function switchSortType(type,reload=false){
+                $(".sorttype"+sortType).removeClass("actived");
+                $(".sorttype"+type).addClass("actived");
+                sortType = parseInt(type);
+
+                if(reload){
+                    $(".articles").html("");
+                    lastCursor="0";
+                    loadArticlesByCategory(lastCursor);
                 }
             }
             function loadCategorys(){
@@ -176,7 +218,7 @@
                         cursor: cursor,
                         id_type: 2,
                         limit: 20,
-                        sort_type: 200
+                        sort_type: sortType
                     },
                     success:function(res){
                         isLoading=false;
@@ -214,7 +256,14 @@
         <div class="category">
 
         </div>
-        <div style="width: 100%;padding: 10px;">
+        <div style="width: 100%;padding: 56px 10px 10px 10px;">
+            <div class="sorts">
+                <span class='sortitem sorttype200 actived' data-type='200'>热门</span>
+                <span class="divide">|</span>
+                <span class='sortitem sorttype300' data-type='300'>最新</span>
+                <span class="divide">|</span>
+                <span class='sortitem sorttype3' data-type='3'>热榜</span>
+            </div>
             <div class="articles">
 
             </div>
