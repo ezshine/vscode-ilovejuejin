@@ -2,7 +2,7 @@
     "name": "ilovejuejin",
     "displayName": "我爱掘金",
     "description": "把掘金网站塞到VSCode里，并添加了更多乐趣！",
-    "version": "0.0.6",
+    "version": "0.0.7",
     "icon": "resources/icon.png",
     "publisher": "ezshine",
     "repository": {
@@ -14,7 +14,7 @@
     "license": "GPL",
 	"keywords": ["juejin","掘金","我爱掘金","ilovejuejin","i love juejin","juej","j"],
 	"engines": {
-		"vscode": "^1.47.0"
+		"vscode": "^1.35.0"
 	},
     "activationEvents": [
         "onView:ilovejuejin_site",
@@ -89,7 +89,7 @@
         "@types/glob": "^7.1.3",
         "@types/mocha": "^8.0.0",
         "@types/node": "^14.0.27",
-        "@types/vscode": "^1.47.0",
+        "@types/vscode": "^1.35.0",
         "eslint": "^7.6.0",
         "glob": "^7.1.6",
         "mocha": "^8.0.1",

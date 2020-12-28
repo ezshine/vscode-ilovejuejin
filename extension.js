@@ -62,10 +62,11 @@ function openInWebview(params) {
 	// Display a message box to the user
 
 	var view = params.view||"default";
+	var target = params.target||view;
 
-	if(!webViewStorage[view])webViewStorage[view]={};
+	if(!webViewStorage[target])webViewStorage[target]={};
 
-	var webViewPanel = webViewStorage[view].panel;
+	var webViewPanel = webViewStorage[target].panel;
 	if(!webViewPanel){
 		webViewPanel = vscode.window.createWebviewPanel(
 			'webview', // viewType
@@ -119,14 +120,14 @@ function openInWebview(params) {
 			context.subscriptions
 		);
 
-		webViewStorage[view]={panel:webViewPanel};
+		webViewStorage[target]={panel:webViewPanel};
 	}
 	webViewPanel.title = params.title||"掘金";
 
 	webViewPanel.iconPath = vscode.Uri.file(path.join(__dirname,"resources",params.icon||"icon_"+view+".svg"));
 
-	if(params.url!=webViewStorage[view].url){
-		webViewStorage[view].url = params.url;
+	if(params.url!=webViewStorage[target].url){
+		webViewStorage[target].url = params.url;
 		webViewPanel.webview.html = getWebViewContent(context, 'views/'+view+'.html');
 		webViewPanel.webview.postMessage({ command: 'load' , params:params });
 	}

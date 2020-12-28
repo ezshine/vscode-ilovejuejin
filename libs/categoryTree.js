@@ -40,7 +40,8 @@ class CategoryTree {
             {
                 title:"群聊(concept)",
                 icon:"icon_chat.svg",
-                url:"http://www.rainbow1024.com/ilovejuejin/kedou/"
+                url:"http://www.rainbow1024.com/ilovejuejin/kedou/",
+                target:"kedou"
             }
         ];
         var a_length = r_cates.length;
