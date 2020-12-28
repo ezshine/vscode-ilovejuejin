@@ -7,6 +7,7 @@ const RecommendTree = require('./libs/recommendTree');
 const CategoryTree = require('./libs/categoryTree');
 const ToolsTree = require("./libs/toolsTree");
 const SettingTree = require("./libs/settingTree");
+const WipTree = require("./libs/wipTree");
 const { default: axios } = require('axios');
 
 // this method is called when your extension is activated
@@ -32,6 +33,9 @@ function activate(ctx) {
 
 	const settingTree = new SettingTree(context);
 	vscode.window.registerTreeDataProvider("ilovejuejin_setting", settingTree);
+
+	const wipTree = new WipTree(context);
+	vscode.window.registerTreeDataProvider("ilovejuejin_wip", wipTree);
 	
 	const recommendTree = new RecommendTree(context);
 	vscode.window.registerTreeDataProvider("ilovejuejin_recommend", recommendTree);
@@ -140,7 +144,8 @@ function getWebViewContent(context, templatePath) {
 	const dirPath = path.dirname(resourcePath);
 	let html = fs.readFileSync(resourcePath, 'utf-8');
     html = html.replace(/(<link.+?href="|<script.+?src="|<img.+?src=")(.+?)"/g, (m, $1, $2) => {
-		return $1 + vscode.Uri.file(path.resolve(dirPath, $2)).with({ scheme: 'vscode-resource' }).toString() + '"';
+		if($2.indexOf("https://")<0)return $1 + vscode.Uri.file(path.resolve(dirPath, $2)).with({ scheme: 'vscode-resource' }).toString() + '"';
+		else return $1 + $2+'"';
 	});
 	return html;
 }

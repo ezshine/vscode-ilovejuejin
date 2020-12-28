@@ -25,6 +25,13 @@ class SettingTree {
                 title:"反馈 & 建议",
                 icon:"icon_like.svg",
                 url:"https://juejin.cn/post/6910962718891573255"
+            },
+            {
+                title:"加入插件交流群",
+                icon:"icon_dingtalk.svg",
+                url:"",
+                view:"group",
+                target:"default"
             }
         ];
         var a_length = r_cates.length;

@@ -2,7 +2,7 @@
     "name": "ilovejuejin",
     "displayName": "我爱掘金",
     "description": "把掘金网站塞到VSCode里，并添加了更多乐趣！",
-    "version": "0.0.8",
+    "version": "0.0.9",
     "icon": "resources/icon.png",
     "publisher": "ezshine",
     "repository": {
@@ -20,19 +20,20 @@
         "onView:ilovejuejin_site",
         "onView:ilovejuejin_tools",
         "onView:ilovejuejin_recommend",
-        "onView:ilovejuejin_setting"
+        "onView:ilovejuejin_setting",
+        "onView:ilovejuejin_wip"
     ],
     "main": "./extension.js",
     "contributes": {
         "commands": [
             {
                 "command": "ilovejuejin.refreshRecommendUsers",
-                "title": "refresh",
+                "title": "换一批",
                 "icon": "resources/icon_refresh.svg"
             },
             {
                 "command": "ilovejuejin.addTools",
-                "title": "add",
+                "title": "提交工具",
                 "icon": "resources/icon_appadd.svg"
             }
         ],
@@ -52,16 +53,20 @@
                     "name": "快捷导航"
                 },
                 {
-                    "id": "ilovejuejin_setting",
-                    "name": "插件设置"
-                },
-                {
                     "id": "ilovejuejin_recommend",
-                    "name": "作者推荐"
+                    "name": "掘友推荐"
                 },
                 {
                     "id": "ilovejuejin_tools",
                     "name": "常用工具"
+                },
+                {
+                    "id": "ilovejuejin_setting",
+                    "name": "插件设置"
+                },
+                {
+                    "id": "ilovejuejin_wip",
+                    "name": "内测功能"
                 }
             ]
         },

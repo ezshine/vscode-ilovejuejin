@@ -3,7 +3,7 @@ const os = require('os');
 const path = require('path');
 const axios = require("axios");
 
-class CategoryTree {
+class WipTree {
     constructor(context){
         this.context = context;
         this.userRoot = os.homedir();
@@ -17,26 +17,18 @@ class CategoryTree {
 
         var r_cates = [
             {
-                title:"首页",
-                icon:"icon_home.svg",
-                url:"https://juejin.cn",
-                view:"home"
+                title:"群聊(concept)",
+                icon:"icon_chat.svg",
+                url:"http://www.rainbow1024.com/ilovejuejin/kedou/",
+                target:"kedou"
             },
             {
-                title:"沸点",
-                icon:"icon_tweet.svg",
-                url:"https://juejin.cn/pins"
+                title:"解压游戏",
+                icon:"icon_game.svg",
+                url:"",
+                view:"game",
+                target:"game"
             },
-            {
-                title:"小册",
-                icon:"icon_book.svg",
-                url:"https://juejin.cn/books"
-            },
-            {
-                title:"活动",
-                icon:"icon_calendar.svg",
-                url:"https://juejin.cn/events"
-            }
         ];
         var a_length = r_cates.length;
 
@@ -68,4 +60,4 @@ class DataItem extends vscode.TreeItem{
     }
 }
 
-module.exports = CategoryTree;
+module.exports = WipTree;
