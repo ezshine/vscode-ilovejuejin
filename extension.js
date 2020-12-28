@@ -81,7 +81,7 @@ function openInWebview(params) {
 		);
 		webViewPanel.onDidDispose(function(){
 			console.log("webview diposed");
-			delete webViewStorage[view];
+			delete webViewStorage[target];
 		});
 		webViewPanel.webview.onDidReceiveMessage(
 			message => {
