@@ -25,17 +25,26 @@ class CategoryTree {
             {
                 title:"沸点",
                 icon:"icon_tweet.svg",
-                url:"https://juejin.cn/pins"
+                url:"https://juejin.cn/pins",
+                alert:"该页可直接发布沸点，点赞，评论<br><span style='font-size:16px;color:#333;'>点击无效时请按住cmd或ctrl键重试</span>"
             },
             {
                 title:"小册",
                 icon:"icon_book.svg",
-                url:"https://juejin.cn/books"
+                url:"https://juejin.cn/books",
+                alert:"暂时无法在内嵌页面中打开小册<br><span style='font-size:16px;color:#333;'>如需浏览请按住cmd或ctrl键重试</span>"
             },
             {
                 title:"活动",
                 icon:"icon_calendar.svg",
-                url:"https://juejin.cn/events"
+                url:"https://juejin.cn/events",
+                alert:"如需报名或查看详情<br>请按住cmd或ctrl键重试"
+            },
+            {
+                title:"蝌蚪聊天室",
+                icon:"icon_chat.svg",
+                url:"http://www.rainbow1024.com/ilovejuejin/kedou/?from=juejin",
+                target:"kedou"
             }
         ];
         var a_length = r_cates.length;

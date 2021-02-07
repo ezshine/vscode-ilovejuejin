@@ -27,8 +27,8 @@ class SettingTree {
                 url:"https://juejin.cn/post/6910962718891573255"
             },
             {
-                title:"加入插件交流群",
-                icon:"icon_dingtalk.svg",
+                title:"加入交流群",
+                icon:"icon_heart.svg",
                 url:"",
                 view:"group",
                 target:"default"

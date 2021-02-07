@@ -57,7 +57,7 @@ function activate(ctx) {
 		console.log('addTools');
 		vscode.env.openExternal("https://github.com/ezshine/ilovejuejin-tools");
 	});
-	context.subscriptions.push(refreshRecommendUsers);
+	context.subscriptions.push(addTools);
 }
 
 function openInWebview(params) {
@@ -101,7 +101,7 @@ function openInWebview(params) {
 						vscode.env.openExternal(message.url);
 						break;
 					case 'openInWebview':
-						openInWebview({url:message.url});
+						openInWebview(message);
 						break;
 					case 'request':
 						console.log("ready to request from weview");
@@ -128,12 +128,13 @@ function openInWebview(params) {
 	}
 	webViewPanel.title = params.title||"掘金";
 
-	webViewPanel.iconPath = vscode.Uri.file(path.join(__dirname,"resources",params.icon||"icon_"+view+".svg"));
+	webViewPanel.iconPath = vscode.Uri.file(path.join(__dirname,"resources",params.icon||"icon_default.svg"));
 
 	if(params.url!=webViewStorage[target].url){
 		webViewStorage[target].url = params.url;
 		webViewPanel.webview.html = getWebViewContent(context, 'views/'+view+'.html');
 		webViewPanel.webview.postMessage({ command: 'load' , params:params });
+		if(params.alert)webViewPanel.webview.postMessage({ command: 'alert' , params:{text:params.alert} });
 	}
 
 	webViewPanel.reveal();

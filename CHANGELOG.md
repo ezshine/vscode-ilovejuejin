@@ -1,9 +1,8 @@
 # Change Log
 
-All notable changes to the "ilovejuejin" extension will be documented in this file.
+- 0.1.14
 
-Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
-
-## [Unreleased]
-
-- Initial release
+~~~~
+1.修复首页滚动到底部加载更多的bug。
+2.全新的黑色主题文章详情页。
+~~~~

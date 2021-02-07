@@ -76,6 +76,7 @@ class DataItem extends vscode.TreeItem{
         super(label,  vscode.TreeItemCollapsibleState.None);
         this.tooltip = tooltip;
         this.iconPath = path.join(__filename,'../../','resources', 'icon_user.svg');
+        command.arguments[0].alert = "该页可直接关注作者，点赞，评论<br><span style='font-size:16px;color:#333;'>点击无效时请按住cmd或ctrl键重试</span>";
         this.command = command;
     }
 }

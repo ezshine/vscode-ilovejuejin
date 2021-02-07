@@ -1,0 +1,94 @@
+<html>
+    <head>
+        <style>
+            *{box-sizing: border-box;}
+            body,html{
+                margin:0;
+                padding: 0;
+                width: 100%;
+                position: relative;
+            }
+
+            .article-title{
+                padding: 10px 10px;
+                font-size: 30px;
+                color: #999;
+                border-bottom: 1px solid #444;
+                background: #333;
+            }
+            .article-content{
+                padding: 0px 10px;
+                color: #999 !important;
+                background: #333 !important;
+            }
+            .markdown-body
+            {
+                color: #999 !important;
+            }
+        </style>
+        <link rel="stylesheet" href="https://res.wx.qq.com/open/libs/weui/2.0.1/weui.min.css">
+        <script type="text/javascript" src="https://res.wx.qq.com/open/libs/weuijs/1.2.1/weui.min.js"></script>
+        <script src="./js/jquery.min.js"></script>
+        <script src="./js/main.js"></script>
+        <script>
+            
+            $(document).ready(function(){
+                
+            });
+
+            var article_url = "";
+            function loadArticle(){
+                request({
+                    url:article_url,
+                    success:function(res){
+                        var res = $(res);
+
+                        var title = $(res).find(".article-title").eq(0).text();
+                        var content = $(res).find(".markdown-body").eq(0);
+                        var hero = $(res).find(".article-hero").eq(0);
+
+                        $(content).find(".lazyload").each(function(index,ele){
+                            $(ele).attr("src",$(ele).attr("data-src"));
+                        });
+
+                        $(".article-title").text(title);
+                        $(".article-content").html(content);
+                    }
+                });
+            }
+
+            function showOriginPage(){
+                log("showOriginPage");
+
+                openExternal(article_url);
+
+                // document.getElementById("ifrDom").onload=function(){
+                //     log("iframeOnLoaded");
+                // };
+                // document.getElementById("ifrDom").style.height="100%";
+                // document.getElementById("ifrDom").src=article_url;
+            }
+
+            window.addEventListener('message', event => {
+                const message = event.data;
+                if(message.command=="load"){
+                    article_url = message.params.url;
+                    loadArticle();
+                }
+            });
+        </script>
+    </head>
+    <body>
+        <iframe id='ifrDom' src="" width="100%" style="height:0%;width:100%;position: absolute;z-index:2;" frameborder="no" border="0"></iframe>
+        <div id='contentDom' style="width:100%;height:100%;padding:10px;">
+            <div class="article-hero"></div>
+            <div class="article-title"></div>
+            <div class="article-content"></div>
+            <div style="margin-top:10px;">
+                <div style="width:100%;color:#999;">
+                    如果觉得这篇文章不错，别忘了 <span style="cursor: pointer;color:#fff;" onclick='showOriginPage();'>使用浏览器打开</span> 并点赞，鼓励作者创作出更多优质内容哟~
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

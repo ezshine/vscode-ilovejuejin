@@ -132,6 +132,8 @@
                 margin-top: 10px;
             }
         </style>
+        <link rel="stylesheet" href="https://res.wx.qq.com/open/libs/weui/2.0.1/weui.min.css">
+        <script type="text/javascript" src="https://res.wx.qq.com/open/libs/weuijs/1.2.1/weui.min.js"></script>
         <script src="./js/jquery.min.js"></script>
         <script src="./js/main.js"></script>
         <script>
@@ -148,7 +150,7 @@
                     let viewH = $(window).height();
                     let bodyH = $(document.body).height();
 
-                    if (bodyH - scroH == viewH){
+                    if (bodyH - scroH <= viewH+5){
                         loadArticlesByCategory(lastCursor);
                     }
                 });
@@ -194,7 +196,7 @@
                         switchCategory(1);
                     },
                     fail:function(err){
-
+                        
                     }
                 });
             }
@@ -208,6 +210,7 @@
             }
             function loadArticlesByCategory(cursor){
                 if(isLoading||!hasMore)return;
+                var loading = weui.loading('请求中');
                 isLoading=true;
                 var cate_item = categorys[lastIndex];
                 request({
@@ -221,6 +224,7 @@
                         sort_type: sortType
                     },
                     success:function(res){
+                        loading.hide();
                         isLoading=false;
                         hasMore=res.has_more;
                         lastCursor=res.cursor;
@@ -228,7 +232,7 @@
                         for(var i=0;i<new_articles.length;i++){
                             var article_item=new_articles[i];
                             $(".articles").append(`
-                                <div class='articleitem' onclick='openInWebview("https://juejin.cn/post/${article_item.article_id}")'>
+                                <div class='articleitem' onclick='openInWebview("https://juejin.cn/post/${article_item.article_id}","article")'>
                                     <div class='text'>
                                         <div class='info'>${article_item.author_user_info.user_name} · ${getTimeUntilNow(article_item.article_info.ctime)} · ${getTagsStr(article_item.tags)}</div>
                                         <div class='title'>${article_item.article_info.title}</div>
@@ -240,6 +244,7 @@
                         }
                     },
                     fail:function(err){
+                        loading.hide();
                         isLoading=false;
                     }
                 });

@@ -10,6 +10,8 @@
                 position: relative;
             }
         </style>
+        <link rel="stylesheet" href="css/weui.min.css">
+        <script type="text/javascript" src="js/weui.min.js"></script>
         <script src="./js/main.js"></script>
         <script>
             window.addEventListener('message', event => {
@@ -19,6 +21,8 @@
                         log("iframeOnLoaded");
                     };
                     document.getElementById("ifrDom").src=message.params.url;
+                }else if(message.command=="alert"){
+                    weui.alert(message.params.text);
                 }
             });
         </script>

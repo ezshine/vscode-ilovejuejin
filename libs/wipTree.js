@@ -17,12 +17,6 @@ class WipTree {
 
         var r_cates = [
             {
-                title:"群聊(concept)",
-                icon:"icon_chat.svg",
-                url:"http://www.rainbow1024.com/ilovejuejin/kedou/",
-                target:"kedou"
-            },
-            {
                 title:"解压游戏",
                 icon:"icon_game.svg",
                 url:"",
