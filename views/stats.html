@@ -1,0 +1,268 @@
+<html>
+    <head>
+        <style>
+            *{box-sizing: border-box;}
+            body,html{
+                margin:0;
+                padding: 0;
+                width: 100%;
+                height: 100%;
+                position: relative;
+            }
+
+            .user_stats
+            {
+                background: #333;
+                padding:10px;
+            }
+            .user_stats>div
+            {
+                width: 100%;
+                height: 300px;
+                color: #999;
+            }
+
+            .user_info
+            {
+                width: 100%;
+                background: #333;
+                display: flex;
+                padding: 10px;
+            }
+        </style>
+        <link rel="stylesheet" href="https://res.wx.qq.com/open/libs/weui/2.0.1/weui.min.css">
+        <script type="text/javascript" src="https://res.wx.qq.com/open/libs/weuijs/1.2.1/weui.min.js"></script>
+        <script src="./js/echarts.min.js"></script>
+        <script src="./js/jquery.min.js"></script>
+        <script src="./js/main.js"></script>
+        <script>
+
+            var jj_user_id = "2955079655898093";
+            var user_stats_data = {};
+
+            $(document).ready(function(){
+                //个人：掘力值，点赞数，阅读数，关注数
+                //文章：点赞数，阅读数，评论数
+            });
+
+            function resetUserStats(){
+
+            }
+            function resetArticleStats(){
+
+            }
+            function updateUserStats(){
+                request({
+                    url:"https://api.juejin.cn/user_api/v1/user/get?user_id="+jj_user_id+"&not_self=1",
+                    success:function(res){
+                        if(res.data){
+                            showHasUserId();
+
+                            $("#user_head").css("background-image","url("+res.data.avatar_large+")");
+                            $("#user_name").text(res.data.user_name);
+
+                            var power = res.data.power;
+                            var got_view_count = res.data.got_view_count;
+                            var got_digg_count = res.data.got_digg_count;
+                            var follower_count = res.data.follower_count;
+
+                            addUserStats(power,got_view_count,got_digg_count,follower_count);
+                        }else{
+                            jj_user_id = null;
+                            showNoUserId();
+                            alert("不是有效的掘金用户ID");
+                        }
+                    }
+                })
+            }
+            function getRecentArticles(){
+                request({
+                    url:"https://apinew.juejin.im/content_api/v1/article/query_list",
+                    method:"post",
+                    data:{
+                        "cursor": "0",
+                        "sort_type": 2,
+                        "user_id": jj_user_id
+                    },
+                    success:function(res){
+                        $("#user_tips").text("上一篇文章发布于"+getTimeUntilNow(res.data[0].article_info.rtime)+", 获赞"+res.data[0].article_info.digg_count+", 被阅读"+res.data[0].article_info.view_count);
+                    }
+                });
+            }
+            function addUserStats(power,view,digg,follow){
+                var now = new Date();
+                var nowDateStr = (now.getMonth()+1)+"月"+(now.getDate())+"日";
+
+                setTimeout(getRecentArticles,200);
+
+                getStorage("user_stats_data",{
+                    success:function(res){
+                        if(res){
+                            user_stats_data = res;
+                        }else{
+                            user_stats_data = {};
+                        }
+
+                        user_stats_data[nowDateStr]={
+                            power:power,
+                            view:view,
+                            digg:digg,
+                            follow:follow,
+                            time:now.getTime(),
+                            date:nowDateStr
+                        };
+
+                        setStorage("user_stats_data",user_stats_data);
+
+                        // $("#user_tips").text("自记录以来掘力值增长了"+(ed_rec_item.power-st_rec_item.power));
+                        drawUserStats();
+                    }
+                });
+            }
+            function drawUserStats(){
+                //"power","view","digg","follow"
+                var chart_keys = [
+                    {
+                        "name":"掘力值",
+                        "key":"power"
+                    },
+                    {
+                        "name":"文章被阅读",
+                        "key":"view"
+                    },
+                    {
+                        "name":"获得点赞",
+                        "key":"digg"
+                    },
+                    {
+                        "name":"关注者",
+                        "key":"follow"
+                    }
+                ];
+
+                var rec_keys = Object.keys(user_stats_data);
+                var st_rec_item = user_stats_data[rec_keys[0]];
+                var ed_rec_item = user_stats_data[rec_keys[rec_keys.length-1]];
+                
+
+                    for(var j=0;j<chart_keys.length;j++){
+                        var chart_key_item = chart_keys[j];
+
+                        var chart = echarts.init($('.user_stats>.'+chart_key_item.key).get(0));
+
+                        var option = {
+                            darkMode:false,
+                            title: {
+                                text: chart_key_item.name+" "+ed_rec_item[chart_key_item.key],
+                                subtext:"自记录以来增长了"+(ed_rec_item[chart_key_item.key]-st_rec_item[chart_key_item.key]),
+                                textStyle:{
+                                    color:"#fff"
+                                }
+                            },
+                            tooltip: {},
+                            xAxis: {
+                                data: []
+                            },
+                            yAxis: {},
+                            series: [{
+                                type: 'line',
+                                data: []
+                            }]
+                        };
+
+                        for(var item_name in user_stats_data){
+                            var data_item = user_stats_data[item_name];
+                            option.xAxis.data.push(data_item.date);
+                            option.series[0].data.push(data_item[chart_key_item.key]);
+                        }
+
+                        chart.setOption(option);
+                    }
+            }
+
+
+            function updateArticleStats(){
+                //6916930617166807054
+            }
+
+            function showHasUserId(){
+                $(".hasUserId").show();
+                $(".noUserId").hide();
+            }
+            function showNoUserId(){
+                $(".hasUserId").hide();
+                $(".noUserId").show();
+            }
+            function init(){
+                getStorage("jj_user_id",{
+                    success:function(res){
+                        jj_user_id = res;
+                        if(jj_user_id){
+                            updateUserStats();
+                        }else{
+                            showNoUserId();
+                        }
+                    }
+                })
+
+                function saveUserId(){
+                    jj_user_id = $("#inputUserId").val();
+
+                    setStorage("jj_user_id",jj_user_id);
+
+                    updateUserStats();
+                }
+
+                $("#btnUserIdConfirm").click(function(){
+                    saveUserId();
+                });
+                $("#inputUserId").keydown(function(e){
+                    if(e.keyCode==13){
+                        saveUserId();
+                    }
+                });
+
+                $("#btnUserIdClean").click(function(){
+                    setStorage("jj_user_id",null);
+                    setStorage("user_stats_data",{});
+                    jj_user_id = null;
+                    user_stats_data = {};
+                    showNoUserId();
+                });
+            }
+
+            window.addEventListener('message', event => {
+                const message = event.data;
+                if(message.command=="load"){
+                    init();
+                }
+            });
+        </script>
+    </head>
+    <body>
+        <div class="noUserId" style="display: none;width: 100%;height: 100%;">
+            <div style="background:#333;border-radius: 5px;padding:5px;position: absolute;left:50%;top:50%;transform: translate(-50%,-50%);display: flex;">
+                <input id='inputUserId' placeholder="请填入掘金账号ID" style="outline: none;font-size: 18px;padding:0px 10px;border: none;background: #e8e8e8;;width:200px;line-height: 40px;height: 40px;"/>
+                <div id='btnUserIdConfirm' style="color: #fff;background:#89D185;padding:0px 10px;line-height: 40px;height: 40px;">保存</div>
+            </div>
+        </div>
+        <div class="hasUserId" style="display: none;padding:10px;">
+            <div class='user_info'>
+                <div style="flex:1;display: flex;">
+                    <div id='user_head' style="background-size: cover;background-position:center;width:50px;height:50px;border-radius:50px;"></div>
+                    <div style="flex:1;margin-left: 10px;">
+                        <div id='user_name' style="font-size: 16px;color:#fff;">昵称</div>
+                        <div id='user_tips' style="font-size: 14px;color:#999;">上一篇文章发布于</div>
+                    </div>
+                </div>
+                <div id='btnUserIdClean' style="color: #fff;background:#89D185;padding:0px 10px;line-height: 40px;height: 40px;">清除</div>
+            </div>
+            <div class='user_stats'>
+                <div class="power"></div>
+                <div class="view"></div>
+                <div class="digg"></div>
+                <div class="follow"></div>
+            </div>
+        </div>
+    </body>
+</html>

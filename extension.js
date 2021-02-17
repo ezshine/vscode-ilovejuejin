@@ -9,6 +9,11 @@ const ToolsTree = require("./libs/toolsTree");
 const SettingTree = require("./libs/settingTree");
 const WipTree = require("./libs/wipTree");
 const { default: axios } = require('axios');
+const low = require('lowdb');
+const FileSync = require('lowdb/adapters/FileSync');
+
+const adapter = new FileSync(path.join(__dirname,'db.json'));
+const db = low(adapter);
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -96,6 +101,12 @@ function openInWebview(params) {
 						break;
 					case 'log':
 						console.log(message.text);
+						break;
+					case 'setStorage':
+						db.set(message.key,message.value).write();
+						break;
+					case 'getStorage':
+						webViewPanel.webview.postMessage({ command: 'onGetStorageSuccess', data: db.get(message.key).value()});
 						break;
 					case 'openExternal':
 						vscode.env.openExternal(message.url);

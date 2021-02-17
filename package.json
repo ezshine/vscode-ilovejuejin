@@ -9,13 +9,21 @@
         "url": "https://github.com/ezshine/vscode-ilovejuejin"
     },
     "categories": [
-		"Other"
+        "Other"
     ],
     "license": "GPL",
-	"keywords": ["juejin","掘金","我爱掘金","ilovejuejin","i love juejin","juej","j"],
-	"engines": {
-		"vscode": "^1.35.0"
-	},
+    "keywords": [
+        "juejin",
+        "掘金",
+        "我爱掘金",
+        "ilovejuejin",
+        "i love juejin",
+        "juej",
+        "j"
+    ],
+    "engines": {
+        "vscode": "^1.35.0"
+    },
     "activationEvents": [
         "onView:ilovejuejin_site",
         "onView:ilovejuejin_tools",
@@ -70,12 +78,12 @@
                 }
             ]
         },
-        "menus":{
+        "menus": {
             "view/title": [
                 {
-                  "command": "ilovejuejin.refreshRecommendUsers",
-                  "when": "view == ilovejuejin_recommend",
-                  "group": "navigation@1"
+                    "command": "ilovejuejin.refreshRecommendUsers",
+                    "when": "view == ilovejuejin_recommend",
+                    "group": "navigation@1"
                 },
                 {
                     "command": "ilovejuejin.addTools",
@@ -102,6 +110,7 @@
         "vscode-test": "^1.4.0"
     },
     "dependencies": {
-        "axios": "^0.21.1"
+        "axios": "^0.21.1",
+        "lowdb": "^1.0.0"
     }
 }

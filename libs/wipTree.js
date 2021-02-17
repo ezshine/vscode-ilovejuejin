@@ -23,6 +23,12 @@ class WipTree {
                 view:"game",
                 target:"game"
             },
+            {
+                title:"掘金统计",
+                icon:"icon_tool.svg",
+                url:"",
+                view:"stats"
+            },
         ];
         var a_length = r_cates.length;
 

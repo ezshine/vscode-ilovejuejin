@@ -5,6 +5,33 @@ function log(str){
         text: str
     })
 }
+function alert(msg){
+  vscode.postMessage({
+    command: 'alert',
+    text: msg
+  })
+}
+function setStorage(key,value){
+  vscode.postMessage({
+    command: 'setStorage',
+    key: key,
+    value:value
+  })
+}
+function getStorage(key,params){
+  function onMessage(event){
+    const message = event.data;
+    if(message.command=="onGetStorageSuccess"){
+        if(params.success)params.success(message.data);
+    }
+    window.removeEventListener('message',onMessage);
+  }
+  window.addEventListener('message',onMessage);
+  vscode.postMessage({
+    command: 'getStorage',
+    key: key
+  })
+}
 function openExternal(url){
     vscode.postMessage({
         command: 'openExternal',
