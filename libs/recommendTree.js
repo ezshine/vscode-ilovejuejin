@@ -22,7 +22,7 @@ class RecommendTree {
         var timestamp = new Date().getTime();
         if(!lastTimestamp||timestamp-lastTimestamp>3600000){
             lastTimestamp=timestamp;
-            const res = await axios.get("https://apinew.juejin.im/user_api/v1/author/recommend?category_id=&cursor=0&limit=100");
+            const res = await axios.get("https://api.juejin.cn/user_api/v1/author/recommend?category_id=&cursor=0&limit=100");
             r_users = res.data.data;
         }else{
             console.log("use cached recommend users");

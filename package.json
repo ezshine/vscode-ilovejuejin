@@ -2,7 +2,7 @@
     "name": "ilovejuejin",
     "displayName": "我爱掘金",
     "description": "把掘金网站塞到VSCode里，并添加了更多乐趣！",
-    "version": "0.0.14",
+    "version": "0.0.16",
     "icon": "resources/icon.png",
     "publisher": "ezshine",
     "repository": {
