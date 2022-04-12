@@ -35,16 +35,9 @@
 > 欢迎各位掘友推荐开发过程中的常用工具，请fork仓库： [https://github.com/ezshine/ilovejuejin-tools](https://github.com/ezshine/ilovejuejin-tools) 提pr。
 
 
-### 交流群
+### 插件开发交流
 
-![](https://rainbow1024.com/ilovejuejin/dingtalk.jpg)
-
-
-### 学习VSCode插件开发
-
-> 我爱掘金，是一个很好的VSCode插件使用Treeview，Webview的范例。
-
-查看更多由大帅编写的 [VSCode插件开发系列教程](https://juejin.cn/post/6910137208607506439)
+添加微信：dashuailaoyuan
 
 
 **Enjoy!**
